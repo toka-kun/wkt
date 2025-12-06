@@ -35,136 +35,76 @@
       </form>
     </div>
   </main>
-
   <br>
+  
   <h2>ようこそ！</h2>
   <p>好きな動画を検索してみましょう！</p>
 
-  <!-- トレンド動画 -->
   <div class="results" id="trend-container"></div>
 
 <style>
-/* ▼ ホームボタン */
-#home-buttons {
-    display: flex;
-    gap: 12px;
-    margin-bottom: 20px;
-}
-
-.home-btn {
-    padding: 8px 14px;
-    background: #e0e0e0;
-    border-radius: 8px;
-    color: black;
-    text-decoration: none;
-    font-weight: 600;
-    border: 1px solid #bfbfbf;
-    transition: 0.25s;
-}
-
-.home-btn:hover {
-    background: #cfcfcf;
-}
-
-/* ▼ 動画を中央寄せ */
-#video-wrapper {
-    display: flex;
-    justify-content: center;
-}
-
+/* ▼ 動画中央寄せ */
 #trend-container {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-    justify-content: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
 }
 
-/* ▼ 動画カード */
+/* ▼ 動画カード（背景を丸く） */
 .result-item {
-    width: 280px;
-    transition: transform 0.25s ease, box-shadow 0.25s ease;
+  width: 280px;
+  padding: 12px;
+  background: #f8f8f8;
+  border-radius: 18px; /* ★サムネではなく背景を丸くする */
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
 
-/* ▼ ホバーで浮かせる */
 .result-item:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+  transform: translateY(-5px);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.25);
 }
 
-/* ▼ サムネイル（角丸強化） */
+/* ▼ サムネイル画像（四角のまま） */
 .thumb {
-    width: 100%;
-    border-radius: 14px;
+  width: 100%;
+  border-radius: 8px;
 }
 
 /* ▼ チャンネル行 */
 .channel-row {
-    display: flex;
-    align-items: center;
-    margin-top: 4px;
+  display: flex;
+  align-items: center;
+  margin-top: 6px;
 }
 
 .channel-icon {
-    width: 28px;
-    height: 28px;
-    border-radius: 50%;
-    margin-right: 8px;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  margin-right: 8px;
 }
 
-/* ▼ 黒文字 */
+/* ▼ テキスト黒 */
 .channel-name,
 .video-title,
 .video-meta {
-    font-size: 12px;
-    color: black;
-    text-decoration: none;
+  font-size: 12px;
+  color: black;
+  text-decoration: none;
 }
 
-/* ▼ タイトル（下にチャンネル名が来る） */
 .video-title {
-    font-weight: 600;
-    margin-top: 6px;
-    margin-bottom: 6px;
+  font-weight: 600;
+  margin-top: 4px;
 }
 
-/* ▼ 動画メタ */
 .video-meta {
-    margin-top: 4px;
-}
-
-/* ▼ 下の app や Music などは非表示 */
-footer {
-    display: none !important;
+  margin-top: 4px;
 }
 </style>
 
-<!-- ホーム画面のボタン -->
-<div id="home-buttons">
-    <a class="home-btn" href="/wkt/">ホーム</a>
-    <a class="home-btn" href="/wkt/trend">トレンド</a>
-    <a class="home-btn" href="/wkt/search">検索</a>
-</div>
-
-<!-- 中央寄せ -->
-<div id="video-wrapper">
-    <div id="trend-container"></div>
-</div>
-
 <script>
-// ▼ 何時間前などを返す関数
-function timeAgo(iso) {
-    const now = new Date();
-    const past = new Date(iso);
-    const diff = (now - past) / 1000;
-
-    if (diff < 60) return "たった今";
-    if (diff < 3600) return Math.floor(diff / 60) + "分前";
-    if (diff < 86400) return Math.floor(diff / 3600) + "時間前";
-    if (diff < 2592000) return Math.floor(diff / 86400) + "日前";
-
-    return "かなり前";
-}
-
 async function loadTrends() {
     const url = "https://raw.githubusercontent.com/siawaseok3/wakame/refs/heads/master/trend.json";
 
@@ -180,19 +120,18 @@ async function loadTrends() {
             const html = `
                 <div class="result-item">
                     <a href="/wkt/w/${item.id}">
-                        <img loading="lazy" class="thumb" src="${item.thumbnails.high.url}">
+                        <img loading="lazy" class="thumb" src="/wkt/back/vi/${item.id}/sddefault.jpg">
                     </a>
-
-                    <p class="video-title">${item.title}</p>
 
                     <div class="channel-row">
                         <img class="channel-icon" src="${item.channelIcon}">
                         <a href="/wkt/c/${item.channelId}" class="channel-name">${item.channel}</a>
                     </div>
 
+                    <p class="video-title">${item.title}</p>
+
                     <p class="video-meta">
                         ${Number(item.viewCount).toLocaleString()} 回再生 ・
-                        ${timeAgo(item.publishedAt)} ・
                         ${Number(item.likeCount).toLocaleString()} 高評価 ・
                         ${Number(item.commentCount).toLocaleString()} コメント
                     </p>
@@ -210,7 +149,6 @@ loadTrends();
 </script>
 
 <script>
-/* ▼ オートコンプリート機能（元のまま） */
 $(function () {
     $('#searchbox').autocomplete({
         source: function (request, response) {
