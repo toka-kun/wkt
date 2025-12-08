@@ -197,34 +197,55 @@ header {
 <div class="results" id="trend-container"></div>
 
 <script>
-/* ▼ サーバーから渡された topVideos をそのまま使用 */
 document.addEventListener("DOMContentLoaded", () => {
+
+    // ▼ サーバーから受け取ったトレンドデータ
     const trending = <%- JSON.stringify(topVideos.trending) %>;
 
     const container = document.getElementById("trend-container");
     container.innerHTML = "";
 
+    // ▼ 経過時間を「◯時間前」「◯日前」などに変換する関数
+    function timeAgo(dateString) {
+        const now = new Date();
+        const published = new Date(dateString);
+        const diffMs = now - published;
+
+        const diffMinutes = Math.floor(diffMs / 1000 / 60);
+        const diffHours = Math.floor(diffMinutes / 60);
+        const diffDays = Math.floor(diffHours / 24);
+
+        if (diffMinutes < 60) return `${diffMinutes}分前`;
+        if (diffHours < 24) return `${diffHours}時間前`;
+        return `${diffDays}日前`;
+    }
+
     trending.forEach(item => {
+
         const html = `
             <div class="result-item">
                 <a href="/wkt/w/${item.id}">
                     <img loading="lazy" class="thumb" src="/wkt/back/vi/${item.id}/sddefault.jpg">
                 </a>
 
-                <div class="channel-row">
-                    <img class="channel-icon" src="${item.channelIcon}">
-                    <a href="/wkt/c/${item.channelId}" class="channel-name">${item.channel}</a>
-                </div>
-
+                <!-- ▼ チャンネル名をタイトルの下に変更・下線を消す -->
                 <p class="video-title">${item.title}</p>
 
+                <p class="channel-name" style="text-decoration:none; color:#555;">
+                    ${item.channel}
+                </p>
+
+                <!-- ▼ 再生回数の前に経過時間を表示 -->
                 <p class="video-meta">
+                    ${timeAgo(item.publishedAt)} ・
                     ${Number(item.viewCount).toLocaleString()} 回再生 ・
                     ${Number(item.likeCount).toLocaleString()} 高評価 ・
                     ${Number(item.commentCount).toLocaleString()} コメント
                 </p>
+
             </div>
         `;
+
         container.innerHTML += html;
     });
 });
