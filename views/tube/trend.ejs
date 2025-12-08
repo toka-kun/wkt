@@ -167,47 +167,37 @@ header {
 </style>
 
 <script>
-async function loadTrends() {
-    const url = "https://raw.githubusercontent.com/siawaseok3/wakame/refs/heads/master/trend.json";
+document.addEventListener("DOMContentLoaded", () => {
+    // ▼ EJS からサーバーで取得した JSON をそのまま埋め込む
+    const trending = <%- JSON.stringify(topVideos.trending) %>;
 
-    try {
-        const res = await fetch(url);
-        const json = await res.json();
-        const trending = json.trending;
+    const container = document.getElementById("trend-container");
+    container.innerHTML = "";
 
-        const container = document.getElementById("trend-container");
-        container.innerHTML = "";
+    trending.forEach(item => {
+        const html = `
+            <div class="result-item">
+                <a href="/wkt/w/${item.id}">
+                    <img loading="lazy" class="thumb" src="/wkt/back/vi/${item.id}/sddefault.jpg">
+                </a>
 
-        trending.forEach(item => {
-            const html = `
-                <div class="result-item">
-                    <a href="/wkt/w/${item.id}">
-                        <img loading="lazy" class="thumb" src="/wkt/back/vi/${item.id}/sddefault.jpg">
-                    </a>
-
-                    <div class="channel-row">
-                        <img class="channel-icon" src="${item.channelIcon}">
-                        <a href="/wkt/c/${item.channelId}" class="channel-name">${item.channel}</a>
-                    </div>
-
-                    <p class="video-title">${item.title}</p>
-
-                    <p class="video-meta">
-                        ${Number(item.viewCount).toLocaleString()} 回再生 ・
-                        ${Number(item.likeCount).toLocaleString()} 高評価 ・
-                        ${Number(item.commentCount).toLocaleString()} コメント
-                    </p>
+                <div class="channel-row">
+                    <img class="channel-icon" src="${item.channelIcon}">
+                    <a href="/wkt/c/${item.channelId}" class="channel-name">${item.channel}</a>
                 </div>
-            `;
-            container.innerHTML += html;
-        });
 
-    } catch (err) {
-        console.error("Trend 読み込み失敗:", err);
-    }
-}
+                <p class="video-title">${item.title}</p>
 
-loadTrends();
+                <p class="video-meta">
+                    ${Number(item.viewCount).toLocaleString()} 回再生 ・
+                    ${Number(item.likeCount).toLocaleString()} 高評価 ・
+                    ${Number(item.commentCount).toLocaleString()} コメント
+                </p>
+            </div>
+        `;
+        container.innerHTML += html;
+    });
+});
 </script>
 
 <script>
