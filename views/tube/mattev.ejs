@@ -176,10 +176,10 @@ async function showPlaybackSettings(iframeurl, mode) {
         localStorage.setItem('tutorialCompleted', 'true');
         document.cookie = `playbackMode=${mode}; path=/; max-age=31536000`;
         if(mode == "nocookie"){
-          showMessage("再生方法をnocookieに設定しました。");
+          showMessage("再生方法をNocookieに設定しました。");
           window.location.href = `/wkt/yt/nocookie/<%= videoId %>?tu=true`;
         } else{
-          showMessage("再生方法をeduに設定しました。");
+          showMessage("再生方法をEducationに設定しました。");
           window.location.href = `/wkt/yt/edu/<%= videoId %>?tu=true`;
         }
     });
