@@ -5,33 +5,36 @@ const path = require("path");
 const http = require('http');
 const serverYt = require("../../server/youtube.js");
 
-// video_config.json の params を取得する関数
-async function getYtInfo() {
+// ▼▼ ここを "video_config.json" から params を取得する式に変更 ▼▼
+async function getYtParams() {
   const url = "https://raw.githubusercontent.com/siawaseok3/wakame/master/video_config.json";
+
   try {
     const response = await axios.get(url);
     if (response.data && response.data.params) {
-      // params を文字列として返す（必要に応じて加工可能）
-      return JSON.stringify(response.data.params);
+      return response.data.params;
     }
-  } catch (error) {
-    console.log(`ytinfo ${url}: ${error.message}`);
+    throw new Error("params が JSON 内に見つかりませんでした");
+  } catch (err) {
+    console.error("getYtParams error:", err.message);
+    throw new Error("params を取得できませんでした");
   }
-  throw new Error('必要なデータを取得できませんでした。');
 }
+// ▲▲ ここまで変更 ▲▲
 
-// /edu/:id エンドポイント
+
 router.get('/edu/:id', async (req, res) => {
   const videoId = req.params.id;
   try {
-    const ytinfo = await getYtInfo();
-    const videosrc = `https://www.youtubeeducation.com/embed/${videoId}?${ytinfo}`;
-    
+    const params = await getYtParams();
+    const videosrc = `https://www.youtubeeducation.com/embed/${videoId}${params}`;
+
     const Info = await serverYt.infoGet(videoId);
+
     const videoInfo = {
       title: Info.primary_info.title.text || "",
       channelId: Info.secondary_info.owner.author.id || "",
-      channelIcon: Info.secondary_info.owner.author.thumbnails[0]?.url || '',
+      channelIcon: Info.secondary_info.owner.author.thumbnails[0].url || '',
       channelName: Info.secondary_info.owner.author.name || "",
       channelSubsc: Info.secondary_info.owner.subscriber_count.text || "",
       published: Info.primary_info.published,
@@ -41,36 +44,36 @@ router.get('/edu/:id', async (req, res) => {
       watch_next_feed: Info.watch_next_feed || "",
     };
           
-    res.render('tube/umekomi/edu.ejs', { videosrc, videoInfo, videoId });
+    res.render('tube/umekomi/edu.ejs', {videosrc, videoInfo, videoId});
   } catch (error) {
      res.status(500).render('tube/mattev', { 
       videoId, 
-      error: '動画を取得できません', 
+      error: '動画を取得できません',
       details: error.message 
     });
   }
 });
 
-// /edurl エンドポイント
 router.get('/edurl', async (req, res) => {
   try {
-    const ytinfo = await getYtInfo();
-    res.send(`${ytinfo}`);
+    const params = await getYtParams();
+    res.send(`${params}`);
   } catch (error) {
      res.status(500).send(error);
   }
 });
 
-// /nocookie/:id エンドポイント
 router.get('/nocookie/:id', async (req, res) => {
   const videoId = req.params.id;
   try {
     const videosrc = `https://www.youtube-nocookie.com/embed/${videoId}`;
+
     const Info = await serverYt.infoGet(videoId);
+
     const videoInfo = {
       title: Info.primary_info.title.text || "",
       channelId: Info.secondary_info.owner.author.id || "",
-      channelIcon: Info.secondary_info.owner.author.thumbnails[0]?.url || '',
+      channelIcon: Info.secondary_info.owner.author.thumbnails[0].url || '',
       channelName: Info.secondary_info.owner.author.name || "",
       channelSubsc: Info.secondary_info.owner.subscriber_count.text || "",
       published: Info.primary_info.published,
@@ -80,11 +83,11 @@ router.get('/nocookie/:id', async (req, res) => {
       watch_next_feed: Info.watch_next_feed || "",
     };
           
-    res.render('tube/umekomi/nocookie.ejs', { videosrc, videoInfo, videoId });
+    res.render('tube/umekomi/nocookie.ejs', {videosrc, videoInfo, videoId});
   } catch (error) {
      res.status(500).render('matte', { 
       videoId, 
-      error: '動画を取得できません', 
+      error: '動画を取得できません',
       details: error.message 
     });
   }
