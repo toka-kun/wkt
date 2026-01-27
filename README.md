@@ -33,9 +33,8 @@
 ## 対応しているデプロイサービス
 
 1. [Render](https://dashboard.render.com/)
-2. [Vercel](https://vercel.com/)
-3. [Railway](https://railway.com/dashboard)
-4. [Koyeb](https://app.koyeb.com/) (Dockerfileを選択して下さい。)
+2. [Railway](https://railway.com/dashboard)
+3. [Koyeb](https://app.koyeb.com/) (Dockerfileを選択して下さい。)
 
 ---
 
