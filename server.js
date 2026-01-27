@@ -3,7 +3,7 @@ const express = require("express");
 const path = require("path");
 const compression = require("compression");
 const bodyParser = require("body-parser");
-const YouTubeJS = require("youtubei.js");
+// const YouTubeJS = require("youtubei.js");  <-- 削除 (これがエラーの原因でした)
 const serverYt = require("./server/youtube.js");
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
@@ -81,32 +81,33 @@ app.use((req, res) => {
   });
 });
 app.on("error", console.error);
-// --- ここから下を server.js の末尾に上書きしてください ---
-
-async function initInnerTube() {
-    try {
-        client = await YouTubeJS.Innertube.create({ lang: "ja", location: "JP" });
-        serverYt.setClient(client);
-        console.log("YouTube Client initialized.");
-    } catch (e) {
-        console.error("YouTube Client Init Error:", e);
-        // エラーでもリトライしつつサーバー自体は落とさないようにする
-        setTimeout(initInnerTube, 10000);
-    }
-}
 
 process.on("unhandledRejection", console.error);
+
+// --- 重要な変更部分 ---
+async function initInnerTube() {
+  try {
+    // ここで動的にインポートする
+    const YouTubeJS = (await import("youtubei.js")).default;
+    
+    client = await YouTubeJS.Innertube.create({ lang: "ja", location: "JP"});
+    serverYt.setClient(client);
+    console.log("YouTube Client initialized.");
+  } catch (e) {
+    console.error("YouTube Client Init Error:", e);
+    setTimeout(initInnerTube, 10000);
+  };
+};
 
 // サーバー起動処理
 initInnerTube();
 
-// Vercel等のServerless環境のためにappをエクスポートする（必須）
+// Vercel用のエクスポート
 module.exports = app;
 
-// ローカルやKoyeb（通常のサーバー）で実行された場合のみポートをリッスンする
-// Vercelではここは実行されず、module.exports = app が使われます
+// ローカル/Koyeb用のポートリッスン
 if (require.main === module) {
     const listener = app.listen(process.env.PORT || 3000, () => {
-        console.log(process.pid, "Ready.", listener.address().port);
+      console.log(process.pid, "Ready.", listener.address().port);
     });
 }
