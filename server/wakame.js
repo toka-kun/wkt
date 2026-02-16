@@ -7,7 +7,7 @@ const MAX_TIME = 10000;
 
 async function getapis() {
     try {
-        const response = await axios.get('https://raw.githubusercontent.com/wakame02/wktopu/refs/heads/main/inv.json');
+        const response = await axios.get('https://raw.githubusercontent.com/toka-kun/Education/refs/heads/main/wktopu/inv.json');
         apis = await response.data;
         console.log('データを取得しました:', apis);
     } catch (error) {
