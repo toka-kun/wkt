@@ -59,7 +59,7 @@
 - 2025/12/09 - Education再生時のエラーを修正
 - 2026/01/22 - トレンドページのUIを改善
 - 2026/01/27 - Koyebでのデプロイに対応
-- 2026/01/28 - [チョコのレポジトリ](https://github.com/cake-wakame/wkt) をパクってCodeSandboxでのデプロイに対応 [@banana-coco](https://github.com/banana-coco) （どうやらこれのお陰でVercelにも対応できたっぽいです。）
+- 2026/01/28 - [チョコのレポジトリ](https://github.com/cake-wakame/wkt) をパクってVercelとCodeSandboxでのデプロイに対応 [@banana-coco](https://github.com/banana-coco) 
 - 2026/02/16 - Invidiousを既存のものにさらに追加、安定性が増したはずです。
 
 ---
@@ -69,7 +69,7 @@
 2026年3月に一気にやります。それまでお待ち下さい。
 - プロキシを復活
 - Invidiousからの取得方法を改善
-- SiaTube APIを追加
+- SiaTube APIを追加（MIN-Tube2 API、YuZuTube APIも追加する可能性あり）
 - UXを改善（特にヘルプページ）
 - Educationのパラメーターを選択制に
 - ゲームをさらに追加
