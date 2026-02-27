@@ -71,7 +71,7 @@
 - プロキシを復活
 - できたらもう一度HFSに挑戦
 - Invidiousからの取得方法を改善
-- SiaTube APIを追加（MIN-Tube2 API、YuZuTube APIも追加する可能性あり）
+- SiaTube APIを追加（XeroxYT-NT API、YuZuTube APIも追加する可能性あり）  
 - 関連動画を表示
 - UXを改善（特にヘルプページ）
 - Educationのパラメーターを選択制に
