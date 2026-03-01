@@ -95,7 +95,7 @@ router.get('/nocookie/:id', async (req, res) => {
           
     res.render('tube/umekomi/nocookie.ejs', {videosrc, videoInfo, videoId});
   } catch (error) {
-    res.status(500).render('matte', { 
+    res.status(500).render('mattev', { 
       videoId, 
       error: '動画を取得できません', 
       details: error.message 
