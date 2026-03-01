@@ -42,8 +42,10 @@
         <div class="text-center">
             <label for="serverSelect" class="text-xl">サーバーを変更:</label>
             <select id="serverSelect" class="mt-2 p-3 bg-gray-700 text-white rounded-lg border border-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                <% serverUrls.forEach(server => { %>
-                    <option value="<%= server.replace('https://', '').replace('.glitch.me', '') %>" class="bg-gray-800 hover:bg-gray-700"><%= server.replace('https://', '').replace('.glitch.me', '') %></option>
+                <% if (typeof serverUrls !== 'undefined' && Array.isArray(serverUrls)) { %>
+                    <% serverUrls.forEach(server => { %>
+                        <option value="<%= server.replace('https://', '').replace('.glitch.me', '') %>" class="bg-gray-800 hover:bg-gray-700"><%= server.replace('https://', '').replace('.glitch.me', '') %></option>
+                    <% }); %>
                 <% }); %>
                 <option value="direct" class="bg-gray-800 hover:bg-gray-700">direct</option>
             </select>
